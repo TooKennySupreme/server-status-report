@@ -1,9 +1,9 @@
 # Script for gathering system status information from a linux server. This has
 # only been tested on Debian linux systems. It outputs HTML text that is meant
 # to be piped into the mail command for delivery:
-# 
+#
 # ruby status.rb | mail -a "Content-type: text/html;" -s "Status Report: $HOSTNAME" "some@address.com"
-# 
+#
 # In Debian, you just need the mailx package installed for the above to work
 # along with Ruby (of course).
 
@@ -32,6 +32,10 @@ top_memory_procs = `ps aux --sort=-rss | head -11`.chomp.strip
 top_cpu_procs = `ps aux --sort=-pcpu | grep -v grep | grep -E "(^([^ ]*?)[ ]*[0-9]*[ ]*(([0-9]{1,2}\.[1-9])|([1-9]{1,2}\.[0-9])))|USER" | head -11`.chomp.strip
 netstat = `netstat -a --tcp | sort`.chomp.strip
 top_snapshot = `top -c -b -n1`.chomp.strip
+df_snapshot = `df -h`.chomp.strip
+netstat_snapshot = `netstat -anp`.chomp.strip
+mem_snapshot = `egrep "Mem|Cache|Swap" /proc/meminfo`.chomp.strip
+who_snapshot = `who -a`.chomp.strip
 
 # Determine graph color
 memused_percent = ((actual_usedmem.to_f / totalmem.to_f) * 100).round
@@ -104,12 +108,24 @@ template = %q{
     <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Top 10 CPU Processes</h3>
     <pre style="background:#000;color:#FFF;padding:10px;margin:5px;overflow:scroll;">
 <%= top_cpu_procs %></pre>
-    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Netstat</h3>
+    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Active Netstat Sockets</h3>
     <pre style="background:#000;color:#FFF;padding:10px;margin:5px;overflow:scroll;">
 <%= netstat %></pre>
-    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">System Snapshot from top</h3>
+    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Full System Snapshot from meminfo</h3>
+    <pre style="background:#000;color:#FFF;padding:10px;margin:5px;overflow:scroll;">
+<%= mem_snapshot %></pre>
+    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Full System Snapshot from df</h3>
+    <pre style="background:#000;color:#FFF;padding:10px;margin:5px;overflow:scroll;">
+<%= df_snapshot %></pre>
+    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Full System Snapshot from who</h3>
+    <pre style="background:#000;color:#FFF;padding:10px;margin:5px;overflow:scroll;">
+<%= who_snapshot %></pre>
+    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Full System Snapshot from top</h3>
     <pre style="background:#000;color:#FFF;padding:10px;margin:5px;overflow:scroll;">
 <%= top_snapshot %></pre>
+    <h3 style="margin:0px;margin-left:5px;margin-right:5px;border-bottom:1px solid #DDD;padding-left:5px;padding-bottom:3px;padding-top:10px;color:#EA7F00;font-weight:bold;font-size:1em;">Full System Snapshot from netstat</h3>
+    <pre style="background:#000;color:#FFF;padding:10px;margin:5px;overflow:scroll;">
+<%= netstat_snapshot %></pre>
   </div>
 </body>
 </html>
