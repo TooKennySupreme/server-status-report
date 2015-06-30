@@ -1,3 +1,6 @@
+#!/bin/bash
+MAILS="carles.tubio@lecreuset.com,c@rles-tub.io"
+/usr/bin/ruby -e "$(cat <<\HERERUBYCODE
 # Script for gathering system status information from a linux server. This has
 # only been tested on Debian linux systems. It outputs HTML text that is meant
 # to be piped into the mail command for delivery:
@@ -130,5 +133,6 @@ template = %q{
 </body>
 </html>
 }
-
 puts ERB.new(template).result
+HERERUBYCODE
+)" | /usr/bin/mail -a "Content-type: text/html;" -s "Status Report from ${HOSTNAME}" "${MAILS}"
