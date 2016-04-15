@@ -16,7 +16,8 @@ This script was primarily written for and tested on DreamHost Private Servers.
 
 To install this script, the first thing you want to do is download a copy of the script to use. To do that, SSH to your server under the user you want to run the script as and run this command:
 
-    git clone git://github.com/watsonian/server-status-report.git
+    git clone ssh://git@github.com/ctubio/server-status-report
+Alternatively see the comments inside [server-status-report.sh](server-status-report.sh).
 
 The script itself is written in Ruby to take advantage of the {ERB templating system}[http://ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html] to produce the HTML content.
 
