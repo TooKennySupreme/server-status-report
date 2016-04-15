@@ -3,9 +3,12 @@ MAILS="carles.tubio@lecreuset.com,c@rles-tub.io"
 /usr/bin/ruby -e "$(cat <<\HERERUBYCODE
 # Script for gathering system status information from a linux server. This has
 # only been tested on Debian linux systems. It outputs HTML text that is meant
-# to be piped into the mail command for delivery:
+# to be piped into the mail command for delivery.
 #
-# ruby status.rb | mail -a "Content-type: text/html;" -s "Status Report: $HOSTNAME" "some@address.com"
+# To run it remotely from a central host, just copy this crontab to any new host:
+# 0 0 * * * bash -c "$(ssh user@central_host -C "cat /path/to/server-status-report.sh")"
+# Or if you are in a hurry and feeling lucky and secure, run it directly from the repo:
+# 0 0 * * * bash -c "$(curl -s https://raw.githubusercontent.com/ctubio/server-status-report/master/server-status-report.sh)"
 #
 # In Debian, you just need the mailx package installed for the above to work
 # along with Ruby (of course).
